@@ -8,6 +8,7 @@ import org.apache.camel.Exchange;
 import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.model.dataformat.JsonLibrary;
+import org.apache.http.conn.ConnectTimeoutException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpMethod;
@@ -35,6 +36,18 @@ public class RouteProcess extends RouteBuilder{
 		onException(UnknownHostException.class)
 	 	.handled(true)
 	 	.setBody(constant("ERROR CONEXIÓN"))
+	 	.setHeader(Exchange.HTTP_RESPONSE_CODE, constant(500))
+	 	.end();
+		
+		onException(ConnectTimeoutException.class)
+	 	.handled(true)
+	 	.setBody(constant("ERROR CONEXIÓN"))
+	 	.setHeader(Exchange.HTTP_RESPONSE_CODE, constant(500))
+	 	.end();
+		
+		onException(Exception.class)
+	 	.handled(true)
+	 	.setBody(constant("ERROR INTERNO"))
 	 	.setHeader(Exchange.HTTP_RESPONSE_CODE, constant(500))
 	 	.end();
 		
